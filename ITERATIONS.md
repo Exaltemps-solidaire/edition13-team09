@@ -28,7 +28,24 @@
 - **Fichiers prévus** : `frontend/src/app/page.tsx`, `frontend/src/app/globals.css` (ou `page.module.css`), `.env.example`, `DEPLOIEMENT.md`, `adr.md` (si un choix structurant apparaît).
 - **Tests unitaires prévus** : 1, sur une fonction pure de formatage (ex. « depuis le 14 mars 2025 » à partir d'une date) si on en introduit une ; sinon, aucun n'est dû — l'écran est du balisage pur fidèle au prototype, hors DoD du point 2.
 - **Étapes ajoutées à la démo** : ouvrir l'application, vérifier la présence de « Famille Martin » et des 3 actions.
-- **Bilan** : _à remplir en fin d'itération_
+- **Bilan** :
+  - Durée de codage réelle : 3 minutes (budget 10 min, pas de dépassement).
+  - Critères d'acceptation : les 3 satisfaits (écran conforme au prototype, 3 actions dans l'ordre, `verifier-deployabilite.sh` sans borne).
+  - Pas de test unitaire ajouté : balisage pur, aucune logique métier introduite ; `npm test` passe (2 tests existants, inchangés).
+  - Déploiement réel effectué (recette du `/CLAUDE.md` racine) : plateforme démarrée, base `team09` créée, `podman-compose.yml` écrit, images construites et publiées, `curl localhost:8080/` et `localhost:8081/health` répondent ; `localhost:8080/sante` et `/health` aussi.
+  - Corrections nécessaires en cours de route : les `Dockerfile` de `api/` et `frontend/` utilisaient des noms courts (`node:24-alpine`, `nginx:1.27-alpine`) qui échouaient à la résolution hors terminal interactif — qualifiés en `docker.io/library/...`, comme annoncé par le `/CLAUDE.md` racine.
+  - `e2e/demo.spec.ts` mis à jour avec l'étape de l'écran 1, mais l'exécution Playwright locale échoue : Chromium headless shell installé mais ses dépendances système (`libnspr4.so`) manquent sur cette machine. Non bloquant pour la publication — signalé, pas corrigé (hors budget, hors DoD).
+  - Signalé à PM Lab : version 1, `moteur_avance: false` (la squad la verra à l'étape « Le prototype »).
+  - Rien n'est reporté : tout le périmètre prévu est fait.
+  - **Modifications** :
+    - `frontend/src/app/page.tsx` : remplace la page par défaut de Next.js par l'écran « Vue de la situation » (famille Martin, schéma des 4 acteurs, 3 actions) — sert les 2 premiers critères.
+    - `frontend/src/app/page.module.css` : styles adaptés du prototype pour cet écran.
+    - `frontend/nginx.conf` : en-têtes de sécurité du gabarit serveur, CSP réduite à `connect-src 'self'`, routes `/health` et `/sante` ajoutées — sert le 3ᵉ critère et la règle 5 du contrat.
+    - `frontend/Dockerfile`, `api/Dockerfile` : images de base qualifiées (`docker.io/library/...`) — nécessaire à la construction sur cette machine.
+    - `.env.example` : variable `PORT` de l'api documentée — règle 2 du contrat.
+    - `DEPLOIEMENT.md` : page de déploiement (services, fragilités connues, contacts) — règle 8 du contrat.
+    - `podman-compose.yml` : écrit à la racine, deux services sur `core-network`, ports 8080/8081 — recette de déploiement du serveur.
+    - `e2e/demo.spec.ts` : étape « Je vois la situation de la famille Martin » ajoutée.
 
 ## Itération 2 : Le travailleur social ouvre et modifie le rapport pré-rédigé
 
@@ -48,6 +65,12 @@
 - **Bilan** : _à remplir en fin d'itération_
 
 ---
+
+## Replanification après l'Itération 1
+
+- Codage + publication de l'Itération 1 : 5 minutes au total (3 min de codage), sans dépassement.
+- Rien n'est reporté : l'Itération 2 reste valide telle que détaillée ci-dessus, sans changement de périmètre ni de priorité.
+- Point de vigilance à vérifier au tour de test : la démo Playwright (`e2e/demo.spec.ts`) ne s'exécute pas encore sur cette machine (dépendances système de Chromium manquantes) — à corriger si le temps le permet, sans bloquer la publication.
 
 ## À venir
 
