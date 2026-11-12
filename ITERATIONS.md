@@ -62,9 +62,27 @@
 - **Fichiers prévus** : `frontend/src/app/page.tsx` (ou nouveau composant d'écran), fichier de test associé — environ 3 fichiers.
 - **Tests unitaires prévus** : 1 à 2, sur la logique de bascule d'écran (quel écran est actif selon l'action cliquée) — pas sur le balisage.
 - **Étapes ajoutées à la démo** : cliquer « Rédiger le rapport d'intervention », vérifier l'affichage du rapport, cliquer « Reprendre plus tard ».
-- **Bilan** : _à remplir en fin d'itération_
+- **Bilan** :
+  - Durée de codage réelle : 1 minute (budget 10 min, pas de dépassement).
+  - Critères d'acceptation : les 3 satisfaits (navigation vers l'écran 2 depuis les 3 actions de l'écran 1, texte du rapport modifiable localement, retour à l'écran 1 via « Reprendre plus tard »). Bonus hors plan : les onglets de la barre de navigation basse sont aussi devenus fonctionnels.
+  - Test unitaire ajouté : `frontend/src/app/navigation.test.ts`, sur la fonction pure `basculerEcran` (logique de bascule d'écran introduite pour cette itération) ; `npm test` passe (4 tests : 2 api + 2 front).
+  - Déploiement réel effectué : image `frontend` reconstruite et republiée, `podman compose up -d --force-recreate`, `/health` et `/sante` vérifiés sur 8080 et 8081.
+  - Reporté : rien.
+  - Ce que le harnais a bloqué ou refusé : rien.
+  - Point non résolu, signalé à nouveau : la démo Playwright reste non exécutable sur cette machine (dépendances système de Chromium absentes, `libnspr4.so` manquant) — corriger cela demande une installation système (`apt`/sudo) qui n'a pas été faite à la demande du développeur. Les 2 nouvelles étapes sont écrites dans `e2e/demo.spec.ts` mais non vérifiées localement ; à vérifier depuis un poste qui a Playwright opérationnel, ou en acceptant l'installation système dans une prochaine itération.
+  - Signalé à PM Lab : version 2, `moteur_avance: false`.
+  - **Modifications** :
+    - `frontend/src/app/navigation.ts` : fonction pure `basculerEcran(action): Ecran` — logique de bascule d'écran, testée.
+    - `frontend/src/app/navigation.test.ts` : 2 tests sur `basculerEcran`.
+    - `frontend/src/app/page.tsx` : composant client (`"use client"`), état `ecran` et `rapport` ; écran 2 (notes capturées, tag IA, rapport éditable, boutons) ; les 3 actions de l'écran 1 et les 2 onglets de la nav bar deviennent cliquables — sert les 3 critères.
+    - `frontend/src/app/page.module.css` : styles de l'écran 2 ajoutés (bandeau, bloc rapport, boutons), interactivité (`cursor: pointer`) sur les éléments cliquables.
+    - `e2e/demo.spec.ts` : 2 étapes ajoutées (ouvrir le rapport, revenir à la situation), non exécutées localement (cf. point non résolu ci-dessus).
 
 ---
+
+## Temps restant au début de l'Itération 2
+
+Annoncé le 2026-11-13 : 35 minutes ou plus. Conforme à l'estimation de la replanification précédente.
 
 ## Replanification après l'Itération 1
 
@@ -72,6 +90,11 @@
 - Rien n'est reporté : l'Itération 2 reste valide telle que détaillée ci-dessus, sans changement de périmètre ni de priorité.
 - Point de vigilance à vérifier au tour de test : la démo Playwright (`e2e/demo.spec.ts`) ne s'exécute pas encore sur cette machine (dépendances système de Chromium manquantes) — à corriger si le temps le permet, sans bloquer la publication.
 
+## Replanification après l'Itération 2
+
+- Codage de l'Itération 2 : 1 minute (budget 10 min) — les deux itérations codées sont très en dessous du plafond.
+- ⚠️ Temps restant encore large (35 min annoncées moins ~2 min de codage+publication) : il reste probablement la place pour une itération de fonctionnalité avant la stabilisation finale, plutôt qu'une Itération 3 purement « stabilisation ». À valider avec les cadreurs avant de retailler l'Itération 3 : décision du développeur à la prochaine commande.
+
 ## À venir
 
-1. Itération 3 (conditionnelle, selon temps restant après le tour de test de l'Itération 2) : stabilisation pour le pitch — pas de nouvelle fonctionnalité métier, correction de ce que le tour de test aura signalé.
+1. Itération 3 (à retailler selon la décision ci-dessus) : soit une fonctionnalité supplémentaire couvrant la priorité suivante (ex. rendre réel le bouton « Envoyer au magistrat », ou différencier les 3 actions de l'écran 1), soit la stabilisation pour le pitch si le temps restant annoncé est redescendu.

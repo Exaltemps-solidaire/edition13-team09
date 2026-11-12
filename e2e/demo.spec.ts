@@ -13,4 +13,15 @@ test("Démo : le cas passant", async ({ page }) => {
     await expect(page.getByText("Rédiger le rapport d'intervention")).toBeVisible();
     await expect(page.getByText("Envoyer au magistrat")).toBeVisible();
   });
+
+  await test.step("J'ouvre le rapport pré-rédigé", async () => {
+    await page.getByText("Rédiger le rapport d'intervention").click();
+    await expect(page.getByText("Rédigé par l'assistant")).toBeVisible();
+    await expect(page.getByRole("textbox", { name: "Texte du rapport d'intervention" })).toBeVisible();
+  });
+
+  await test.step("Je reviens à l'écran de situation", async () => {
+    await page.getByText("Reprendre plus tard").click();
+    await expect(page.getByText("Que faire maintenant ?")).toBeVisible();
+  });
 });
